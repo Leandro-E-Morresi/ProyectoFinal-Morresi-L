@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Compras</title>
+    <style>
+        .notificacion {
+            padding: 10px;
+            margin: 5px;
+            border-radius: 5px;
+            color: white;
+            font-weight: bold;
+        }
+
+        .notificacion.success {
+            background-color: #4CAF50; /* Verde */
+        }
+
+        .notificacion.warning {
+            background-color: #FF9800; /* Naranja */
+        }
+    </style>
+</head>
+<body>
+    <h1>Simulador de Compras</h1>
+
+    <!-- Formulario para agregar productos -->
+    <div>
+        <input type="text" id="nombreProducto" placeholder="Nombre del producto" required>
+        <input type="number" id="precioProducto" placeholder="Precio del producto" required min="0.01" step="0.01">
+        <button id="btnAgregarProducto">Agregar Producto</button>
+    </div>
+
+    <!-- Sección de productos agregados -->
+    <h3>Productos Agregados:</h3>
+    <ul id="listaProductos"></ul>
+
+    <!-- Total de la compra -->
+    <h2>Total de la Compra: $<span id="total">0.00</span></h2>
+
+    <!-- Sección de notificaciones -->
+    <div id="notificaciones"></div>
+
+    <!-- Botones de acciones adicionales -->
+    <div>
+        <button id="btnAplicarDescuento">Aplicar Descuento</button>
+        <button id="btnCalcularImpuesto">Calcular Impuesto</button>
+        <button id="btnLimpiarCompra">Limpiar Compra</button>
+        <button id="btnBuscarProducto">Buscar Producto</button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

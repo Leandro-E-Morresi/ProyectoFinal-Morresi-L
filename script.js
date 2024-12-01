@@ -153,5 +153,104 @@ document.getElementById('btnLimpiarCompra').addEventListener('click', limpiarCom
 // Cargar los datos al iniciar la página
 window.onload = cargarDatos;
 
+// Cargar productos desde un archivo JSON o API externa
+function cargarProductosDesdeJSON() {
+    fetch('productos.json')
+        .then(response => response.json())
+        .then(data => {
+            data.forEach(producto => {
+                const nuevoProducto = new Producto(producto.nombre, producto.precio);
+                productos.push(nuevoProducto);
+                totalCompra += producto.precio;
+                mostrarProducto(nuevoProducto);
+            });
+            document.getElementById("total").textContent = totalCompra.toFixed(2);
+            mostrarNotificacion("Productos cargados desde JSON.", 'success');
+        })
+        .catch(error => {
+            console.error('Error al cargar los productos:', error);
+            mostrarNotificacion("Hubo un problema al cargar los productos.", 'warning');
+        });
+}
+
+// Función para mostrar el producto en la lista
+function mostrarProducto(producto) {
+    const listaProductos = document.getElementById('listaProductos');
+    const li = document.createElement('li');
+    li.textContent = `${producto.nombre} - $${producto.precio.toFixed(2)}`;
+    listaProductos.appendChild(li);
+}
+
+// Llamar a esta función cuando la página se carga
+window.onload = function () {
+    cargarDatos();
+    cargarProductosDesdeJSON();
+};
+
+function mostrarNotificacion(mensaje, tipo) {
+    const notificacionesDiv = document.getElementById('notificaciones');
+    const nuevaNotificacion = document.createElement('div');
+    
+    nuevaNotificacion.textContent = mensaje;
+    nuevaNotificacion.className = `notificacion ${tipo} animate__animated animate__fadeInUp`; // Animación de fade-in
+    
+    // Añadir al DOM
+    notificacionesDiv.appendChild(nuevaNotificacion);
+
+    // Eliminar la notificación después de 3 segundos
+    setTimeout(() => {
+        notificacionesDiv.removeChild(nuevaNotificacion);
+    }, 3000);
+}
+
+function aplicarDescuento() {
+    new Promise((resolve, reject) => {
+        const porcentajeDescuento = parseFloat(prompt("Introduce el porcentaje de descuento (0-100):"));
+
+        if (isNaN(porcentajeDescuento) || porcentajeDescuento < 0 || porcentajeDescuento > 100) {
+            reject("Por favor, introduce un porcentaje de descuento válido.");
+        } else {
+            resolve(porcentajeDescuento);
+        }
+    })
+    .then(porcentajeDescuento => {
+        const montoDescuento = (totalCompra * porcentajeDescuento) / 100;
+        totalCompra -= montoDescuento;
+
+        document.getElementById("total").textContent = totalCompra.toFixed(2);
+        guardarEnStorage();
+
+        mostrarNotificacion(`Descuento aplicado: $${montoDescuento.toFixed(2)}`, 'success');
+        mostrarNotificacion(`Total después del descuento: $${totalCompra.toFixed(2)}`, 'success');
+    })
+    .catch(error => {
+        mostrarNotificacion(error, 'warning');
+    });
+}
+// Función para buscar un producto
+function buscarProducto() {
+    const nombreProductoBusqueda = prompt("Introduce el nombre del producto a buscar:");
+
+    if (!nombreProductoBusqueda) {
+        mostrarNotificacion("Por favor, ingresa un nombre de producto para buscar.", 'warning');
+        return;
+    }
+
+    // Buscar el producto en la lista de productos
+    const productoEncontrado = productos.find(producto => producto.nombre.toLowerCase() === nombreProductoBusqueda.toLowerCase());
+
+    // Si el producto existe
+    if (productoEncontrado) {
+        mostrarNotificacion(`Producto encontrado: ${productoEncontrado.nombre} - $${productoEncontrado.precio.toFixed(2)}`, 'success');
+    } else {
+        mostrarNotificacion("Producto no encontrado.", 'warning');
+    }
+}
+
+// Asignar evento al botón "Buscar Producto"
+document.getElementById('btnBuscarProducto').addEventListener('click', buscarProducto);
+
+
+
 
 
